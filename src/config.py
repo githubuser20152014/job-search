@@ -16,19 +16,18 @@ APIS = {
     }
 }
 
-# Companies to search for
-COMPANIES = [
-    'Microsoft',
-    'Google',
-    'Meta',
-    'IBM'
-]
-
 # Keywords to search for
 KEYWORDS = [
     'project manager',
     'program manager',
-    'product manager'
+    'product manager',
+    'AI product manager',
+    'AI program manager',
+    'AI project manager',
+    'AI product owner',
+    'artificial intelligence product manager',
+    'artificial intelligence program manager',
+    'artificial intelligence project manager'
 ]
 
 # Delay between requests (in seconds)

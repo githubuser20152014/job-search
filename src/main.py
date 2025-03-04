@@ -1,5 +1,5 @@
 from job_searcher import JobSearcher
-from config import COMPANIES, KEYWORDS
+from config import KEYWORDS
 import time
 
 def main():

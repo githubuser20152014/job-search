@@ -1,6 +1,21 @@
 # Job Search Automation
 
-A Python script that automates job searching across major tech companies by searching LinkedIn job listings for specified roles.
+A Python script that automates job searching across LinkedIn for project management and AI-related positions.
+
+## Features
+
+- Searches LinkedIn jobs for multiple keywords
+- Filters for jobs posted in the last 30 days
+- Saves results to Excel with:
+  - Clickable application links
+  - Multiple worksheets (one per search, timestamped)
+  - Auto-adjusted column widths
+- Tracks:
+  - Company name
+  - Job title
+  - Location
+  - Posting date
+  - Date found
 
 ## Setup
 
@@ -22,22 +37,20 @@ pip install requests pandas beautifulsoup4 feedparser openpyxl
 
 ## Configuration
 
-Edit `src/config.py` to customize:
+Edit `src/config.py` to customize search keywords:
 
 ```python
-# Companies to search
-COMPANIES = [
-    'Microsoft',
-    'Google',
-    'Meta',
-    'IBM'
-]
-
-# Job titles to search for
 KEYWORDS = [
     'project manager',
     'program manager',
-    'product manager'
+    'product manager',
+    'AI product manager',
+    'AI program manager',
+    'AI project manager',
+    'AI product owner',
+    'artificial intelligence product manager',
+    'artificial intelligence program manager',
+    'artificial intelligence project manager'
 ]
 ```
 
@@ -48,20 +61,13 @@ Run the script:
 python src/main.py
 ```
 
-The script will:
-1. Search LinkedIn jobs for each company and keyword combination
-2. Save results to `job_listings.xlsx` with:
-   - Company name
-   - Job title
-   - Location
-   - Application link
-   - Date found
+Results are saved to `job_listings.xlsx` with a new worksheet created for each run, named with timestamp (e.g., `Jobs_202403041530`).
 
 ## Project Structure
 ```
 job-search/
 ├── src/
-│   ├── main.py           # Main script
+│   ├── main.py           # Script entry point
 │   ├── job_searcher.py   # Job search implementation
 │   └── config.py         # Search configuration
 ├── venv/                 # Virtual environment
