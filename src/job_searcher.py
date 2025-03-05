@@ -26,6 +26,28 @@ class JobSearcher:
             print(f"Error parsing date {posting_date}: {str(e)}")
             return False
         
+    def check_visa_requirements(self, description_text):
+        """Check for visa requirement mentions in job description"""
+        visa_keywords = [
+            'visa', 'sponsorship', 'work authorization', 'legally authorized',
+            'permanent resident', 'green card', 'citizenship', 'work permit',
+            'H1B', 'H-1B', 'H1-B', 'eligible to work', 'right to work'
+        ]
+        
+        found_terms = []
+        description_lower = description_text.lower()
+        
+        for keyword in visa_keywords:
+            if keyword in description_lower:
+                # Get the surrounding context (100 characters)
+                index = description_lower.find(keyword)
+                start = max(0, index - 50)
+                end = min(len(description_text), index + 50)
+                context = description_text[start:end].strip()
+                found_terms.append(context)
+        
+        return '; '.join(found_terms) if found_terms else 'Not mentioned'
+
     def search_linkedin_jobs(self):
         """
         Search LinkedIn Jobs using their public RSS feeds
@@ -55,6 +77,20 @@ class JobSearcher:
                                 link = job.find('a', class_='base-card__full-link').get('href')
                                 location = job.find('span', class_='job-search-card__location').text.strip()
                                 
+                                # Get job description
+                                try:
+                                    job_response = requests.get(link)
+                                    if job_response.status_code == 200:
+                                        job_soup = BeautifulSoup(job_response.text, 'html.parser')
+                                        description = job_soup.find('div', class_='description__text')
+                                        description_text = description.text.strip() if description else ''
+                                        visa_info = self.check_visa_requirements(description_text)
+                                    else:
+                                        visa_info = 'Failed to fetch description'
+                                except Exception as e:
+                                    print(f"Error fetching job description: {str(e)}")
+                                    visa_info = 'Error fetching description'
+                                
                                 # Get posting date
                                 posting_date = job.find('time', class_='job-search-card__listdate')
                                 if posting_date:
@@ -71,10 +107,12 @@ class JobSearcher:
                                         'link': link,
                                         'location': location,
                                         'posting_date': posting_date,
+                                        'visa_info': visa_info,
                                         'date_found': datetime.now().strftime("%Y-%m-%d")
                                     }
                                     self.jobs.append(job_data)
                                     print(f"Found recent job: {title} at {company_name} (Posted: {posting_date})")
+                                    print(f"Visa info: {visa_info}")
                                 else:
                                     print(f"Skipping older job: {title} (Posted: {posting_date})")
                             
