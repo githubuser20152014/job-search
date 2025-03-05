@@ -5,7 +5,8 @@ A Python script that automates job searching across LinkedIn for project managem
 ## Features
 
 - Searches LinkedIn jobs for multiple keywords
-- Filters for jobs posted in the last 30 days
+- Configurable time range for job searches (default: 30 days)
+- Scans job descriptions for visa/sponsorship requirements
 - Saves results to Excel with:
   - Clickable application links
   - Multiple worksheets (one per search, timestamped)
@@ -15,6 +16,7 @@ A Python script that automates job searching across LinkedIn for project managem
   - Job title
   - Location
   - Posting date
+  - Visa/sponsorship information
   - Date found
 
 ## Setup
@@ -56,12 +58,26 @@ KEYWORDS = [
 
 ## Usage
 
-Run the script:
+Basic usage (searches last 30 days):
 ```bash
 python src/main.py
 ```
 
-Results are saved to `job_listings.xlsx` with a new worksheet created for each run, named with timestamp (e.g., `Jobs_202403041530`).
+Search with custom time range:
+```bash
+python src/main.py --days 7    # Search last 7 days
+python src/main.py --days 14   # Search last 14 days
+```
+
+Get help:
+```bash
+python src/main.py --help
+```
+
+Results are saved to `job_listings.xlsx` with:
+- New worksheet for each run, named with timestamp (e.g., `Jobs_202403041530`)
+- Visa requirement information extracted from job descriptions
+- Clickable links to job applications
 
 ## Project Structure
 ```
@@ -76,4 +92,6 @@ job-search/
 
 ## Notes
 - Respects rate limiting with delays between requests
+- Scans full job descriptions for visa/sponsorship requirements
+- Provides context around visa-related terms found
 - Exports results to Excel for easy filtering and tracking

@@ -10,18 +10,19 @@ import os
 import openpyxl
 
 class JobSearcher:
-    def __init__(self):
+    def __init__(self, days_back=30):
         self.jobs = []
-        # Calculate the date 30 days ago
-        self.thirty_days_ago = datetime.now() - timedelta(days=30)
+        # Calculate the cutoff date based on days_back parameter
+        self.cutoff_date = datetime.now() - timedelta(days=days_back)
+        self.days_back = days_back
         
     def is_recent_job(self, posting_date):
-        """Check if job was posted within last 30 days"""
+        """Check if job was posted within specified days"""
         try:
             if posting_date == 'Not specified':
                 return False
             job_date = datetime.strptime(posting_date, '%Y-%m-%d')
-            return job_date >= self.thirty_days_ago
+            return job_date >= self.cutoff_date
         except Exception as e:
             print(f"Error parsing date {posting_date}: {str(e)}")
             return False
@@ -54,9 +55,10 @@ class JobSearcher:
         """
         try:
             for keyword in KEYWORDS:
-                # Remove company filter and just search for keywords
+                # Adjust LinkedIn's time filter based on days_back
+                time_filter = f"&f_TPR=r{self.days_back * 86400}"  # Convert days to seconds
                 query = quote(keyword)
-                url = f"https://www.linkedin.com/jobs/search?keywords={query}&location=United%20States&f_TPR=r2592000"  # 30 days filter
+                url = f"https://www.linkedin.com/jobs/search?keywords={query}&location=United%20States{time_filter}"
                 print(f"\nSearching LinkedIn for {keyword}...")
                 
                 try:
